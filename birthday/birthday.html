@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise</title>
+<style>
+  body {margin:0; font-family:'Arial',sans-serif; background:#fdf6f0; overflow-x:hidden;}
+  .curtain {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background:#ff1493; z-index: 9999;
+    animation: openCurtain 2s forwards;
+  }
+  @keyframes openCurtain {0%{transform:translateY(0);}100%{transform:translateY(-100%);}}
+  @keyframes closeCurtain {0%{transform:translateY(-100%);}100%{transform:translateY(0);}}
+
+  .page {display:none; width:100vw; height:100vh; padding:20px; box-sizing:border-box; overflow-y:auto;}
+  .active {display:block;}
+  .title {text-align:center; font-size:24px; margin-bottom:20px; font-weight:bold; color:#ff1493;}
+  .typing {white-space: pre-wrap; border-right:2px solid #000; overflow:hidden;}
+  .side-by-side {display:flex; justify-content:space-between;}
+  .english, .urdu {width:48%;}
+  .poetry-text, .final-text {padding:20px; font-size:18px; line-height:1.5; background:#ffe6f2; border-radius:10px;}
+  .next-btn, .finish-btn, .start-btn {position:absolute; bottom:20px; right:20px; padding:10px 20px; background:#ff69b4; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+  .balloons {position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1;}
+  .balloon {position:absolute; width:40px; height:60px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; animation: float 8s infinite;}
+  @keyframes float {0%{transform: translateY(100vh) translateX(0) rotate(0deg);} 100%{transform: translateY(-100vh) translateX(50px) rotate(360deg);} }
+  #theEndOverlay {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#ff1493; color:#fff; font-size:80px; font-weight:bold; text-align:center; line-height:100vh; z-index:10000;}
+</style>
+</head>
+<body>
+
+<!-- Audio -->
+<audio id="bgMusic" src="birthday.mp3" loop></audio>
+
+<div class="curtain"></div>
+<div class="balloons" id="balloons"></div>
+
+<!-- Page 1: Start button -->
+<div class="page active" id="page1">
+  <div class="title">Birthday Wishes</div>
+  <div class="side-by-side">
+    <div class="english typing" id="text1"></div>
+    <div class="urdu typing" id="text1_ur"></div>
+  </div>
+  <button class="start-btn" onclick="startBirthday()">Start 🎵</button>
+</div>
+
+<!-- Page 2 -->
+<div class="page" id="page2">
+  <div class="title">Blessings</div>
+  <div class="side-by-side">
+    <div class="english typing" id="text2"></div>
+    <div class="urdu typing" id="text2_ur"></div>
+  </div>
+  <button class="next-btn" onclick="nextPage(3)">Next ➜</button>
+</div>
+
+<!-- Page 3: Short poetry -->
+<div class="page" id="page3">
+  <div class="title">Short Poetry</div>
+  <div class="poetry-text">
+    <p>تیری مسکان سے روشن میری ہر شام رہے 😊<br>
+تیری خوشبو سے مہکتا میرا ہر خواب رہے 🌸<br>
+سالگرہ کے دن یہی دعا ہے میری<br>
+تو ہمیشہ میری دعاؤں کے حصار میں رہے<br>
+تیرا حسن جیسے چاند کا عکس پانی میں 🌙<br>
+تیری باتیں جیسے خوشبو ہو کہانی میں 🌸<br>
+سالگرہ تیری میرے لیے عید سے کم نہیں<br>
+تو رہے ہمیشہ میری زندگی کی روانی میں......</p>
+  </div>
+  <button class="next-btn" onclick="nextPage(4)">Next ➜</button>
+</div>
+
+<!-- Page 4: Long poetry -->
+<div class="page" id="page4">
+  <div class="title">Poetry for My Chand</div>
+  <div class="poetry-text">
+    <p>جب کبھی قسمت مہربان ہوئی تو میں آپ کے روبرو بیٹھ کر آپ کو بتاؤں گا کہ.. 🫴🏻✨<br>
+بے شک آپ کا حسن اس بات کا مستحق ہے کہ اس پر روز ایک نظم لکھی جائے .. 🌹🖋️<br>
+اسی سلسلے میں ایک نظم... 📜💫<br>
+کہ کیا ہو اگر وہ مجھ سے کہہ دے.....<br>
+آج مری تعریف لکھو تم ...🥹💌<br>
+کیا لکھوں گا... ؟ 🤍<br>
+چاند کے جیسی..؟ 🌙<br>
+پر وہ تو چاند سے پیاری ہے ناں.. 🫶🏻🥹♥️<br>
+چاند تو اس کی دید کی خاطر مارا مارا پھرتا ہے... 🌙<br>
+اور سورج اس کی ایک جھلک کی خاطر روز نکلتا ہے ...☀️✨<br>
+یہ پھول اور کلیاں اس کا چہرہ دیکھ کے ہی تو کھلتی ہیں... 🌸🌼<br>
+رب جانے کتنی آنکھیں شب بھر خواب اسی کے بنتی ہیں... 🌙👀💭<br>
+اس کے گالوں کی رنگت دیکھ کے ہاتھ گلاب بھی ملتے ہیں.... 🌹😍<br>
+اس کی آنکھوں کی گہرائی سے دریا ساگر جلتے ہیں ...🌊🔥<br>
+اس کی نظروں کی مستی سے ہی سب میخانے چلتے ہیں ....🍷👀<br>
+وہ جب انگڑائی لیتا ہے تب موسم رنگ بدلتے ہیں ...🍁🌈<br>
+جب دھوپ پڑے تو اس نازک پر پریاں سایہ کرتی ہیں ....🧚‍♀️☀️<br>
+اور جب وہ چلتا ہے تو اس کو ہرنیں رک کر تکتی ہیں...💞<br>
+دنیا میں اس کو دیکھ کے کتنے لوگ مصور بنتے ہیں ...🎨🖌️<br>
+اور مجھ جیسا ہر ایک شخص یہ سوچ کے نظمیں لکھتا ہے ...✍️<br>
+کیا ہو اگر وہ مجھ سے کہہ دے<br>
+آج میری تعریف لکھو تم... 🥹♥️<br>
+آج میری تعریف لکھو تم... 💞✨</p>
+  </div>
+  <button class="next-btn" onclick="nextPage(5)">Next ➜</button>
+</div>
+
+<!-- Page 5: Dua -->
+<div class="page" id="page5">
+  <div class="title">Dua</div>
+  <div class="side-by-side">
+    <div class="english typing" id="text5"></div>
+    <div class="urdu typing" id="text5_ur"></div>
+  </div>
+  <button class="next-btn" onclick="nextPage(6)">Ameen 🤍</button>
+</div>
+
+<!-- Page 6: Heart -->
+<div class="page" id="page6">
+  <div class="title">My Heart</div>
+  <div class="side-by-side">
+    <div class="english typing" id="text6"></div>
+    <div class="urdu typing" id="text6_ur"></div>
+  </div>
+  <button class="next-btn" onclick="nextPage(7)">Next ➜</button>
+</div>
+
+<!-- Page 7: Final -->
+<div class="page" id="page7">
+  <div class="final-text" id="finalText">
+    And in the end… I just run out of words. No sentence feels enough, no paragraph feels complete. All I know is that this day means everything to me, because it gave this world someone who unknowingly became my whole world. I’m just endlessly grateful that you were born — because without this day, my happiness would have never existed.
+    <br><br><span style="font-size:32px; font-weight:bold; display:block; text-align:center;">I Love You</span>
+  </div>
+  <button class="finish-btn" onclick="finishAnimation()">Finish 🎉</button>
+</div>
+
+<div id="theEndOverlay">The End</div>
+
+<script>
+const pages = 7;
+function nextPage(num){
+  for(let i=1;i<=pages;i++){document.getElementById("page"+i).classList.remove("active");}
+  document.getElementById("page"+num).classList.add("active");
+}
+
+// Typing effect
+const textData={
+  text1:`Happy Birthday to my girl\nThe day you were born, the world became more beautiful — but my world truly began the day you came into my life. You’re not just my love, you’re my peace, my smile, my safe place. I pray your life is filled with the same happiness you bring into mine every single day. Stay blessed, stay mine forever. 💕✨`,
+  text1_ur:`میری پیاری لڑکی کو سالگرہ مبارک\nجس دن تم پیدا ہوئیں، دنیا خوبصورت ہوئی — لیکن میری دنیا اُس دن شروع ہوئی جب تم میری زندگی میں آئیں۔ تم صرف میری محبت نہیں، بلکہ میری سکون، میری مسکراہٹ، اور میری محفوظ جگہ ہو۔ میں دعا کرتا ہوں کہ تمہاری زندگی وہی خوشیاں لے کر آئے جو تم میری زندگی میں لے آتی ہو۔ ہمیشہ خوش رہو، ہمیشہ میری رہو۔ 💕✨`,
+  text2:`May Allah’s نور always shine on your face and His mercy always surround you. I pray that every dream in your heart comes true, every prayer you make gets accepted, and your life is filled with love, respect, and endless blessings. Stay happy and blessed forever. Ameen. 🤍👑`,
+  text2_ur:`اللہ کا نور ہمیشہ آپ کے چہرے پر چمکے اور اس کی رحمت ہمیشہ آپ کے اردگرد رہے۔ میں دعا کرتا ہوں کہ آپ کے دل کا ہر خواب پورا ہو، ہر دعا قبول ہو، اور آپ کی زندگی محبت، احترام اور لامتناہی نعمتوں سے بھری ہو۔ ہمیشہ خوش اور برکتیں حاصل رہیں۔ آمین۔ 🤍👑`,
+  text5:`On your special day, I pray that Allah fills your life with endless happiness, your heart with peace, and your path with success. May every tear be replaced with a smile, and every worry turn into ease. May you always be protected, loved, and blessed beyond measure. Ameen. 🤍✨`,
+  text5_ur:`آپ کے خاص دن پر، میں دعا کرتا ہوں کہ اللہ آپ کی زندگی کو لامتناہی خوشیوں سے بھر دے، آپ کے دل کو سکون دے، اور آپ کے راستے کو کامیابی سے روشن کرے۔ ہر آنسو کی جگہ مسکراہٹ آئے اور ہر فکر آسانی میں بدل جائے۔ آپ ہمیشہ محفوظ، محبت اور برکتوں سے مالا مال رہیں۔ آمین۔ 🤍✨`,
+  text6:`Happiest Birthday To the Girl Who Owns My Heart — Happy Birthday 👑❤️ Loving you feels like living in a beautiful dream where every moment shines brighter. Your voice is my favorite sound, your name is my favorite word, and your love is my greatest blessing. If I could gift you the world, it still wouldn’t match your worth. So today I gift you my promise — to stand beside you, protect your smile, and love you endlessly. 💫💕`,
+  text6_ur:`میری زندگی کی مالک لڑکی کو سب سے خوشیوں بھری سالگرہ 👑❤️ آپ سے محبت کرنا ایسے ہے جیسے ہر لمحہ روشن خواب میں جینا۔ آپ کی آواز میرا پسندیدہ شور ہے، آپ کا نام میرا پسندیدہ لفظ ہے، اور آپ کی محبت میری سب سے بڑی نعمت ہے۔ اگر میں آپ کو دنیا دے دوں، تب بھی آپ کی قیمت سے کم ہے۔ آج میں آپ سے وعدہ کرتا ہوں — آپ کے ساتھ کھڑا رہوں، آپ کی مسکراہٹ کی حفاظت کروں، اور آپ سے بے حد محبت کروں۔ 💫💕`
+};
+
+function typeText(id,text,i=0){
+  if(i<text.length){
+    document.getElementById(id).innerHTML+=text.charAt(i);
+    setTimeout(()=>typeText(id,text,i+1),25);
+  }
+}
+
+// On load, type pages 1,2,5,6
+window.onload=()=>{
+  typeText('text1',textData.text1);
+  typeText('text1_ur',textData.text1_ur);
+  typeText('text2',textData.text2);
+  typeText('text2_ur',textData.text2_ur);
+  typeText('text5',textData.text5);
+  typeText('text5_ur',textData.text5_ur);
+  typeText('text6',textData.text6);
+  typeText('text6_ur',textData.text6_ur);
+  createBalloons();
+}
+
+function finishAnimation(){
+  document.querySelector('.finish-btn').style.display='none';
+  document.getElementById('theEndOverlay').style.display='block';
+  document.querySelector('.curtain').style.animation='closeCurtain 2s forwards';
+}
+
+// Balloons
+function createBalloons(){
+  const balloonContainer=document.getElementById("balloons");
+  for(let i=0;i<20;i++){
+    let b=document.createElement("div");
+    b.className="balloon";
+    b.style.left=Math.random()*90+"%";
+    b.style.background=`radial-gradient(circle at 50% 50%, ${randomColor()}, ${randomColor()})`;
+    b.style.animationDuration=(5+Math.random()*5)+"s";
+    balloonContainer.appendChild(b);
+  }
+}
+function randomColor(){
+  const colors=["#ff69b4","#ff1493","#ffb6c1","#ffa07a","#f08080"];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
+// Start button plays music
+function startBirthday(){
+  const music = document.getElementById('bgMusic');
+  music.play().catch(()=>console.log('Autoplay blocked'));
+  nextPage(2);
+}
+</script>
+</body>
+</html>
